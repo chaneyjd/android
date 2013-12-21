@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">GetPushes</string>
+    <string name="action_settings">Settings</string>
+    <string name="quote">Hello world!</string>
+    <string name="symbol">PG</string>
+    <string name="button">Get Quote</string>
+    <string name="register">Register</string>
+
+</resources>

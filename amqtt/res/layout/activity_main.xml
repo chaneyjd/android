@@ -5,42 +5,78 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     tools:context=".MainActivity" >
 
+    <Spinner
+        android:id="@+id/spinner1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="52dp"
+        android:entries="@array/From_Account" />
+
     <TextView
-        android:id="@+id/textView1"
-        android:layout_width="400dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="100dp"
-        android:text="@string/hello_world" />
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="false"
+        android:layout_below="@+id/spinner1"
+        android:text="To Account:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <Spinner
+        android:id="@+id/spinner2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinner1"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView2"
+        android:layout_marginTop="16dp"
+        android:entries="@array/To_Account" />
+
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/button2"
+        android:layout_alignLeft="@+id/spinner2"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@+id/textView1"
+        android:layout_below="@+id/spinner2"
+        android:text="Amount:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <EditText
-        android:id="@+id/hostName"
-        android:layout_width="175dp"
-        android:layout_height="50dp"
-        android:ems="10"
-        android:hint="@+id/Host_Hint"
-        android:inputType="textPersonName"
-        android:text="@string/host_name"
-        android:visibility="invisible" />
+        android:id="@+id/editText1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/textView3"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/textView3"
+        android:ems="10" >
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="125dp"
-        android:layout_height="50dp"
-        android:layout_marginLeft="15dp"
-        android:layout_toRightOf="@id/hostName"
-        android:onClick="connect"
-        android:text="@string/button_action_connect"
-        android:visibility="invisible" />
+        <requestFocus />
+    </EditText>
 
     <Button
         android:id="@+id/button2"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/button1"
-        android:layout_below="@+id/button1"
-        android:layout_marginLeft="16dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:onClick="popup"
-        android:text="@+id/Button" />
+        android:text="Transfer" />
+
+    <TextView
+        android:id="@+id/textView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/spinner1"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="18dp"
+        android:text="From Account:"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
 </RelativeLayout>

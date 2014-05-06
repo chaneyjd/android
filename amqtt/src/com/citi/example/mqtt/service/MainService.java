@@ -1,24 +1,24 @@
 package com.citi.example.mqtt.service;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.Hashtable;
-
+import java.util.Iterator;
+import java.util.List;
+import java.util.Properties;
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.os.Binder;
@@ -28,7 +28,7 @@ import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.util.Log;
-
+import com.citi.example.AssetPropertyReader;
 import com.citi.example.mqtt.MainActivity;
 import com.citi.example.mqtt.R;
 import com.ibm.mqtt.IMqttClient;
@@ -50,6 +50,23 @@ public class MainService extends Service implements MqttSimpleCallback {
 	public static final String MQTT_PING_ACTION = "com.citi.example.mqtt.service.PING";
 	public static final int MQTT_NOTIFICATION_ONGOING = 1;
 	public static final int MQTT_NOTIFICATION_UPDATE = 2;
+	public static final int MAX_MQTT_CLIENTID_LENGTH = 22;
+	private MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
+	private String brokerHostName = "";
+	private String publishTopic = "";
+	private ArrayList<String> topics = new ArrayList<String>();
+	private ArrayList<Integer> qos = new ArrayList<Integer>();
+	private String brokerPortNumber = "";
+	private MqttPersistence usePersistence = null;
+	private boolean cleanStart = true;
+	private short keepAliveSeconds = 20 * 60;
+	private String mqttClientId = null; // unique to the broker - two clients not permitted using the same client ID
+	private IMqttClient mqttClient = null;
+	private NetworkConnectionIntentReceiver netConnReceiver;
+	private BackgroundDataChangeIntentReceiver dataEnabledReceiver;
+	private PingSender pingSender;
+	private AssetPropertyReader assetsPropertyReader;
+    private Properties p;
 
 	public enum MQTTConnectionStatus {
 		INITIAL, // initial status
@@ -60,23 +77,7 @@ public class MainService extends Service implements MqttSimpleCallback {
 		NOTCONNECTED_DATADISABLED, // can't connect because the user has disabled data access
 		NOTCONNECTED_UNKNOWNREASON // failed to connect for some reason
 	}
-
-	public static final int MAX_MQTT_CLIENTID_LENGTH = 22;
-	private MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
-	private String brokerHostName = "";
-	private String topicName = "";
-	private String topicName2 = "";
-	private int brokerPortNumber = 1883;
-	private MqttPersistence usePersistence = null;
-	private boolean cleanStart = true;
-	private int[] qualitiesOfService = { 0 };
-	private short keepAliveSeconds = 20 * 60;
-	private String mqttClientId = null; // unique to the broker - two clients not permitted using the same client ID
-	private IMqttClient mqttClient = null;
-	private NetworkConnectionIntentReceiver netConnReceiver;
-	private BackgroundDataChangeIntentReceiver dataEnabledReceiver;
-	private PingSender pingSender;
-
+	
 //	public MainService() {
 //		Log.d("MainService", "In Constructor");
 //	}
@@ -88,23 +89,23 @@ public class MainService extends Service implements MqttSimpleCallback {
 		super.onCreate();
 		connectionStatus = MQTTConnectionStatus.INITIAL;
 		mBinder = new LocalBinder<MainService>(this);
-		SharedPreferences settings = getSharedPreferences(APP_ID, MODE_PRIVATE);
-		brokerHostName = settings.getString("broker", "");
-		topicName = settings.getString("topic", "");
-		topicName2 = settings.getString("topic2", "");
+		
+		assetsPropertyReader = new AssetPropertyReader(this);
+        p = assetsPropertyReader.getProperties("amqtt.properties");
+
+		brokerHostName = p.getProperty("host");
+		brokerPortNumber = p.getProperty("port");
+		topics.add(p.getProperty("public_topic"));
+		qos.add(2);
+		topics.add(p.getProperty("private_topic") + Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+		qos.add(2);
+		publishTopic = p.getProperty("publish_topic");
+		
 		dataEnabledReceiver = new BackgroundDataChangeIntentReceiver();
 		registerReceiver(dataEnabledReceiver, new IntentFilter(ConnectivityManager.ACTION_BACKGROUND_DATA_SETTING_CHANGED));
 		defineConnectionToBroker(brokerHostName);
 	}
 	
-	private void setup() {
-		Log.d("DEBUG", "In Setup for Service");
-		SharedPreferences settings = getSharedPreferences(APP_ID, MODE_PRIVATE);
-		brokerHostName = settings.getString("broker", "");
-		topicName = settings.getString("topic", "");
-		topicName2 = settings.getString("topic2", "");
-	}
-
 	@Override
 	public void onStart(final Intent intent, final int startId) {
 		new Thread(new Runnable() {
@@ -132,7 +133,6 @@ public class MainService extends Service implements MqttSimpleCallback {
 			stopSelf();
 			return;
 		}
-		setup();
 
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
 		if (cm.getBackgroundDataSetting() == false) // respect the user's no data
@@ -147,21 +147,20 @@ public class MainService extends Service implements MqttSimpleCallback {
 
 		if (isAlreadyConnected() == false) {
 			connectionStatus = MQTTConnectionStatus.CONNECTING;
-			NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-			Notification notification = new Notification(R.drawable.ic_citi, "MQTT", System.currentTimeMillis());
-			notification.flags |= Notification.FLAG_ONGOING_EVENT;
-			notification.flags |= Notification.FLAG_NO_CLEAR;
-			
-			Intent notificationIntent = new Intent(this, MainActivity.class);
-			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-			//notification.setLatestEventInfo(this, "MQTT", "MQTT Service is running", contentIntent);
-			notification.setLatestEventInfo(this, "MQTT", "MQTT Service is running", null);
-			nm.notify(MQTT_NOTIFICATION_ONGOING, notification);
+
+//			NotificationManager nm = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+//			Notification notification = new Notification(R.drawable.ic_citi, "MQTT", System.currentTimeMillis());
+//			notification.flags |= Notification.FLAG_ONGOING_EVENT;
+//			notification.flags |= Notification.FLAG_NO_CLEAR;
+//			Intent notificationIntent = new Intent(this, MainActivity.class);
+//			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+//			notification.setLatestEventInfo(this, "MQTT", "MQTT Service is running", contentIntent);
+//			notification.setLatestEventInfo(this, "MQTT", "MQTT Service is running", null);
+//			nm.notify(MQTT_NOTIFICATION_ONGOING, notification);
 
 			if (isOnline()) {
 				if (connectToBroker()) {
-					subscribeToTopic(topicName);
-					subscribeToTopic(topicName2);
+					subscribeToTopic();
 				}
 			} else {
 				connectionStatus = MQTTConnectionStatus.NOTCONNECTED_WAITINGFORINTERNET;
@@ -310,8 +309,8 @@ public class MainService extends Service implements MqttSimpleCallback {
 			connectionStatus = MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON;
 			broadcastServiceStatus("Connection lost - reconnecting...");
 			if (connectToBroker()) {
-				subscribeToTopic(topicName);
-				subscribeToTopic(topicName2);
+				//String[] topics = { publicTopicName, privateTopicName };
+				subscribeToTopic();
 			}
 		}
 
@@ -350,7 +349,7 @@ public class MainService extends Service implements MqttSimpleCallback {
 	private boolean connectToBroker() {
 		try {
 			mqttClient.connect(generateClientId(), cleanStart, keepAliveSeconds);
-			//broadcastServiceStatus("Connected");
+//			broadcastServiceStatus("Connected");
 			connectionStatus = MQTTConnectionStatus.CONNECTED;
 			scheduleNextPing();
 			return true;
@@ -363,16 +362,14 @@ public class MainService extends Service implements MqttSimpleCallback {
 		}
 	}
 
-	private void subscribeToTopic(String topicName) {
+	private void subscribeToTopic() {
 		boolean subscribed = false;
 
 		if (isAlreadyConnected() == false) {
 			Log.e("mqtt", "Unable to subscribe as we are not connected");
 		} else {
 			try {
-				String[] topics = { topicName };
-				mqttClient.subscribe(topics, qualitiesOfService);
-
+				mqttClient.subscribe(topics.toArray(new String[topics.size()]), convertIntegers(qos));
 				subscribed = true;
 			} catch (MqttNotConnectedException e) {
 				Log.e("mqtt", "subscribe failed - MQTT not connected", e);
@@ -389,14 +386,14 @@ public class MainService extends Service implements MqttSimpleCallback {
 		}
 	}
 	
-	public void publishMessageToTopic(String topicName, String message) {
+	public void publishMessageToTopic(String message) {
 		boolean published = false;
 
 		if (isAlreadyConnected() == false) {
 			Log.e("mqtt", "Unable to publish as we are not connected");
 		} else {
 			try {
-				mqttClient.publish(topicName, message.getBytes(), 2, true);
+				mqttClient.publish(publishTopic, message.getBytes(), 2, true);
 				published = true;
 			} catch (MqttNotConnectedException e) {
 				Log.e("mqtt", "publish failed - MQTT not connected", e);
@@ -478,11 +475,9 @@ public class MainService extends Service implements MqttSimpleCallback {
 
 			if (isOnline()) {
 				if (connectToBroker()) {
-					subscribeToTopic(topicName);
-					subscribeToTopic(topicName2);
+					subscribeToTopic();
 				}
 			}
-
 			wl.release();
 		}
 	}
@@ -510,8 +505,7 @@ public class MainService extends Service implements MqttSimpleCallback {
 				}
 
 				if (connectToBroker()) {
-					subscribeToTopic(topicName);
-					subscribeToTopic(topicName2);
+					subscribeToTopic();
 				}
 			}
 			scheduleNextPing();
@@ -568,18 +562,14 @@ public class MainService extends Service implements MqttSimpleCallback {
 		return false;
 	}
 	
-	public void showMyDialog(Context context, String title, String message) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(title)
-        .setMessage(message)
-        .setCancelable(false)
-        .setIcon(R.drawable.ic_citi)
-        .setNegativeButton("OK",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
-    }
+	public static int[] convertIntegers(List<Integer> integers)
+	{
+	    int[] ret = new int[integers.size()];
+	    Iterator<Integer> iterator = integers.iterator();
+	    for (int i = 0; i < ret.length; i++)
+	    {
+	        ret[i] = iterator.next().intValue();
+	    }
+	    return ret;
+	}
 }

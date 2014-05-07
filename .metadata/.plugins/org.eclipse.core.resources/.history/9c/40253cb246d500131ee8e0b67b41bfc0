@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Citi MQTT</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Output:</string>
+    <string name="button_action_connect">Connect</string>
+    <string name="host_name">vm-3b11-b25f.nam.nsroot.net</string>
+    <string name="button_action_disconnect">Disconnect</string>
+    <string name="title_activity_main_activity_notify">MainActivityNotify</string>
+    <string name="Host_Hint">Enter Host Name Here</string>
+
+    <string-array name="From_Account">
+        <item>11112222</item>
+        <item>22223333</item>
+        <item>33334444</item>
+        <item>44445555</item>
+    </string-array>
+    <string-array name="To_Account">
+        <item>66667777</item>
+        <item>77778888</item>
+        <item>88889999</item>
+        <item>99990000</item>
+    </string-array>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
+</resources>

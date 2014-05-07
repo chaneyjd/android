@@ -5,78 +5,57 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     tools:context=".MainActivity" >
 
-    <Spinner
-        android:id="@+id/spinner1"
+    <Button
+        android:id="@+id/button1"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/button2"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="52dp"
-        android:entries="@array/From_Account" />
-
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="false"
-        android:layout_below="@+id/spinner1"
-        android:text="To Account:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    <Spinner
-        android:id="@+id/spinner2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/spinner1"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView2"
         android:layout_marginTop="16dp"
-        android:entries="@array/To_Account" />
+        android:onClick="spend"
+        android:text="Spend" />
 
-    <TextView
-        android:id="@+id/textView3"
+    <Button
+        android:id="@+id/button3"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/button2"
-        android:layout_alignLeft="@+id/spinner2"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/textView1"
-        android:layout_below="@+id/spinner2"
-        android:text="Amount:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_below="@+id/button1"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="18dp"
+        android:onClick="activatecard1"
+        android:text="Get Activation Code" />
 
-    <EditText
-        android:id="@+id/editText1"
+    <Button
+        android:id="@+id/button4"
+        style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/textView3"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/textView3"
-        android:ems="10" >
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="activatecard2"
+        android:text="Activate Card" />
 
-        <requestFocus />
-    </EditText>
+    <Button
+        android:id="@+id/buttonTransfer"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:onClick="transfer"
+        android:text="Make a Transfer" />
 
     <Button
         android:id="@+id/button2"
         style="?android:attr/buttonStyleSmall"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:onClick="popup"
-        android:text="Transfer" />
-
-    <TextView
-        android:id="@+id/textView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/spinner1"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="18dp"
-        android:text="From Account:"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:layout_alignLeft="@+id/button4"
+        android:layout_below="@+id/buttonTransfer"
+        android:layout_marginTop="14dp"
+        android:onClick="paymentdue"
+        android:text="Payment Due" />
 
 </RelativeLayout>

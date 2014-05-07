@@ -39,6 +39,14 @@
             android:label="@string/title_activity_fullscreen"
             android:theme="@style/FullscreenTheme" >
         </activity>
+        <activity
+            android:name="com.citi.example.mqtt.TransferActivity"
+            android:label="@string/title_activity_transfer" >
+        </activity>
+        <activity
+            android:name="com.citi.example.mqtt.ActivateActivity"
+            android:label="@string/title_activity_activate" >
+        </activity>
     </application>
 
 </manifest>

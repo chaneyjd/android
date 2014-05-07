@@ -9,6 +9,10 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -28,6 +32,7 @@ import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.util.Log;
+
 import com.citi.example.AssetPropertyReader;
 import com.citi.example.mqtt.MainActivity;
 import com.citi.example.mqtt.R;
@@ -52,6 +57,8 @@ public class MainService extends Service implements MqttSimpleCallback {
 	public static final int MQTT_NOTIFICATION_UPDATE = 2;
 	public static final int MAX_MQTT_CLIENTID_LENGTH = 22;
 	private MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
+	private Hashtable<String, String> dataCache = new Hashtable<String, String>();
+	private LocalBinder<MainService> mBinder;
 	private String brokerHostName = "";
 	private String publishTopic = "";
 	private ArrayList<String> topics = new ArrayList<String>();
@@ -78,18 +85,17 @@ public class MainService extends Service implements MqttSimpleCallback {
 		NOTCONNECTED_UNKNOWNREASON // failed to connect for some reason
 	}
 	
-//	public MainService() {
+	public MainService() {
 //		Log.d("MainService", "In Constructor");
-//	}
+	}
 
 	@SuppressWarnings("deprecation")
 	@Override
 	public void onCreate() {
-		Log.d("DEBUG", "In onCreate for Service");
 		super.onCreate();
 		connectionStatus = MQTTConnectionStatus.INITIAL;
 		mBinder = new LocalBinder<MainService>(this);
-		
+
 		assetsPropertyReader = new AssetPropertyReader(this);
         p = assetsPropertyReader.getProperties("amqtt.properties");
 
@@ -230,8 +236,6 @@ public class MainService extends Service implements MqttSimpleCallback {
 		nm.notify(MQTT_NOTIFICATION_UPDATE, notification);
 	}
 
-	private LocalBinder<MainService> mBinder;
-
 	@Override
 	public IBinder onBind(Intent intent) {
 		return mBinder;
@@ -309,7 +313,6 @@ public class MainService extends Service implements MqttSimpleCallback {
 			connectionStatus = MQTTConnectionStatus.NOTCONNECTED_UNKNOWNREASON;
 			broadcastServiceStatus("Connection lost - reconnecting...");
 			if (connectToBroker()) {
-				//String[] topics = { publicTopicName, privateTopicName };
 				subscribeToTopic();
 			}
 		}
@@ -317,16 +320,19 @@ public class MainService extends Service implements MqttSimpleCallback {
 		wl.release();
 	}
 
-	public void publishArrived(String topic, byte[] payloadbytes, int qos,
-			boolean retained) {
+	public void publishArrived(String topic, byte[] payloadbytes, int qos, boolean retained) {
 		PowerManager pm = (PowerManager) getSystemService(POWER_SERVICE);
 		WakeLock wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "MQTT");
 		wl.acquire();
 		String messageBody = new String(payloadbytes);
-
-		if (addReceivedMessageToStore(topic, messageBody)) {
-			broadcastReceivedMessage(topic, messageBody);
-			notifyUser("Citi data received", topic, messageBody);
+		try {
+			JSONObject json = new JSONObject(messageBody);
+			if (addReceivedMessageToStore(topic, messageBody)) {
+				broadcastReceivedMessage(topic, messageBody);
+				notifyUser(json.get("alert").toString() , " ", json.get("message").toString());
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 		scheduleNextPing();
 		wl.release();
@@ -474,9 +480,9 @@ public class MainService extends Service implements MqttSimpleCallback {
 			wl.acquire();
 
 			if (isOnline()) {
-				if (connectToBroker()) {
-					subscribeToTopic();
-				}
+//				if (connectToBroker()) {
+//					subscribeToTopic();
+//				}
 			}
 			wl.release();
 		}
@@ -511,8 +517,6 @@ public class MainService extends Service implements MqttSimpleCallback {
 			scheduleNextPing();
 		}
 	}
-
-	private Hashtable<String, String> dataCache = new Hashtable<String, String>();
 
 	private boolean addReceivedMessageToStore(String key, String value) {
 		String previousValue = null;
@@ -562,7 +566,7 @@ public class MainService extends Service implements MqttSimpleCallback {
 		return false;
 	}
 	
-	public static int[] convertIntegers(List<Integer> integers)
+	private static int[] convertIntegers(List<Integer> integers)
 	{
 	    int[] ret = new int[integers.size()];
 	    Iterator<Integer> iterator = integers.iterator();

@@ -1,0 +1,33 @@
+package com.citi.example;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
+public class AssetPropertyReader {
+       private Properties properties = new Properties();
+
+       public AssetPropertyReader(String FileName) {
+    	   try {
+			FileInputStream f = new FileInputStream(FileName);
+			properties.load(f);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       }
+
+       public Properties getProperties(String FileName) {
+              try {
+                     InputStream inputStream = File.
+                     properties.load(inputStream);
+              } catch (IOException e) {
+              }
+              return properties;
+       }
+}

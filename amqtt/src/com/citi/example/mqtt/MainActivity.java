@@ -2,10 +2,8 @@ package com.citi.example.mqtt;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import com.citi.example.mqtt.R;
 import com.citi.example.mqtt.service.MainService;
-
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings.Secure;
@@ -47,23 +45,92 @@ public class MainActivity extends Activity {
 	        mIsBound = false;
 	    }
 	}
-    
-	public void popup(View view) {
+	
+	public void paymentdue(View view) {
 		JSONObject json = new JSONObject();
 		try {
-			EditText mAmount = (EditText)findViewById(R.id.editText1);
-			Spinner mFrom = (Spinner)findViewById(R.id.spinner1);
-			Spinner mTo = (Spinner)findViewById(R.id.spinner2);
-
 			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
-			json.put("action", "transfer");
-			json.put("from_account", mFrom.getSelectedItem().toString());
-			json.put("to_account", mTo.getSelectedItem().toString());
-			json.put("message", mAmount.getText().toString());
+			json.put("action", "paymentdue");
+			json.put("message", "");
+			json.put("duedate", "5/6/2014");
+			json.put("amount", "100.00");
+			json.put("account", "1122334455667788");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
 		mainsvc.publishMessageToTopic(json.toString());
+	}
+
+	public void spend(View view) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+			json.put("action", "spend");
+			json.put("message", "");
+			json.put("duedate", "5/6/2014");
+			json.put("amount", "40.00");
+			json.put("account", "8877665544332211");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		mainsvc.publishMessageToTopic(json.toString());
+	}
+
+	public void activatecard1(View view) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+			json.put("action", "activatecard1");
+			json.put("message", "");
+			json.put("duedate", "5/6/2014");
+			json.put("amount", "40.00");
+			json.put("account", "8877665544332211");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		mainsvc.publishMessageToTopic(json.toString());
+	}
+	
+	public void activatecard2(View view) {
+		JSONObject json = new JSONObject();
+		try {
+			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+			json.put("action", "activatecard1");
+			json.put("message", "");
+			json.put("duedate", "5/6/2014");
+			json.put("amount", "40.00");
+			json.put("account", "8877665544332211");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		mainsvc.publishMessageToTopic(json.toString());
+	}
+
+	public void transfer(View view) {
+        Intent intent = new Intent(MainActivity.this, TransferActivity.class);
+        startActivity(intent);
+		
+//		JSONObject json = new JSONObject();
+//		JSONObject json2 = new JSONObject();
+//		try {
+//			EditText mAmount = (EditText)findViewById(R.id.editText1);
+//			Spinner mFrom = (Spinner)findViewById(R.id.spinner1);
+//			Spinner mTo = (Spinner)findViewById(R.id.spinner2);
+//
+//			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+//			json.put("action", "transfer");
+//			json.put("account_from", mFrom.getSelectedItem().toString());
+//			json.put("account_to", mTo.getSelectedItem().toString());
+//			json.put("message", mAmount.getText().toString());
+//			
+//			json2.put("1", "one");
+//			json2.put("2", "two");
+//			
+//			json.put("test", json2);
+//		} catch (JSONException e) {
+//			e.printStackTrace();
+//		}
+//		mainsvc.publishMessageToTopic(json.toString());
 	}
 
 	@Override
@@ -128,7 +195,7 @@ public class MainActivity extends Activity {
 		super.onDestroy();
 		unregisterReceiver(statusUpdateIntentReceiver);
 		unregisterReceiver(messageIntentReceiver);
-		stopService(new Intent(this, MainService.class));
+//		stopService(new Intent(this, MainService.class));
 	}
 
 	@Override
@@ -141,24 +208,30 @@ public class MainActivity extends Activity {
 	}
 	
 	public void showMyDialog(String title, String message) {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(" ");
-        builder.setMessage(message);
-        builder.setCancelable(true);
-        builder.setIcon(R.drawable.ic_citi);
-        builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-                Intent intent = new Intent(MainActivity.this, FullscreenActivity.class);
-                startActivity(intent);
-            }
-        });
-        builder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int id) {
-                dialog.cancel();
-            }
-        });
-        AlertDialog alert = builder.create();
-        alert.show();
+		try {
+			JSONObject json = new JSONObject(message);
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+	        builder.setTitle(" ");
+	        builder.setMessage(json.get("message").toString());
+	        builder.setCancelable(true);
+	        builder.setIcon(R.drawable.ic_citi);
+	        builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int id) {
+	                dialog.cancel();
+	                Intent intent = new Intent(MainActivity.this, FullscreenActivity.class);
+	                startActivity(intent);
+	            }
+	        });
+	        builder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+	            public void onClick(DialogInterface dialog, int id) {
+	                dialog.cancel();
+	            }
+	        });
+	        AlertDialog alert = builder.create();
+	        alert.show();
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
     }
 }

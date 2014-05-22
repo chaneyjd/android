@@ -9,10 +9,8 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -32,9 +30,8 @@ import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
 import android.provider.Settings.Secure;
 import android.util.Log;
-
 import com.citi.example.AssetPropertyReader;
-import com.citi.example.mqtt.MainActivity;
+import com.citi.example.mqtt.FullscreenActivity;
 import com.citi.example.mqtt.R;
 import com.ibm.mqtt.IMqttClient;
 import com.ibm.mqtt.MqttClient;
@@ -54,7 +51,7 @@ public class MainService extends Service implements MqttSimpleCallback {
 	public static final String MQTT_STATUS_MSG = "com.citi.example.mqtt.service.STATUS_MSG";
 	public static final String MQTT_PING_ACTION = "com.citi.example.mqtt.service.PING";
 	public static final int MQTT_NOTIFICATION_ONGOING = 1;
-	public static final int MQTT_NOTIFICATION_UPDATE = 2;
+	public static int MQTT_NOTIFICATION_UPDATE = 2;
 	public static final int MAX_MQTT_CLIENTID_LENGTH = 22;
 	private MQTTConnectionStatus connectionStatus = MQTTConnectionStatus.INITIAL;
 	private Hashtable<String, String> dataCache = new Hashtable<String, String>();
@@ -230,10 +227,10 @@ public class MainService extends Service implements MqttSimpleCallback {
 		notification.defaults |= Notification.DEFAULT_VIBRATE;
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notification.ledARGB = Color.MAGENTA;
-		Intent notificationIntent = new Intent(this, MainActivity.class);
+		Intent notificationIntent = new Intent(this, FullscreenActivity.class);
 		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		notification.setLatestEventInfo(this, title, body, contentIntent);
-		nm.notify(MQTT_NOTIFICATION_UPDATE, notification);
+		nm.notify(MQTT_NOTIFICATION_UPDATE++, notification);
 	}
 
 	@Override

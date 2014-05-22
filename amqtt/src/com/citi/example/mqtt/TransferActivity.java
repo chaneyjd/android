@@ -66,9 +66,9 @@ public class TransferActivity extends Activity {
 
 			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
 			json.put("action", "transfer");
-			json.put("account_from", mFrom.getSelectedItem().toString());
-			json.put("account_to", mTo.getSelectedItem().toString());
-			json.put("message", mAmount.getText().toString());
+			json.put("from_account", mFrom.getSelectedItem().toString());
+			json.put("to_account", mTo.getSelectedItem().toString());
+			json.put("amount", mAmount.getText().toString());
 			
 			json2.put("1", "one");
 			json2.put("2", "two");
@@ -79,6 +79,7 @@ public class TransferActivity extends Activity {
 		}
 		
 		mainsvc.publishMessageToTopic(json.toString());
+		this.finish();
 	}
 
 }

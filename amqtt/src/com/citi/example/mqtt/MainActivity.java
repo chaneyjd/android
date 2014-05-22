@@ -1,5 +1,6 @@
 package com.citi.example.mqtt;
 
+import java.util.Random;
 import org.json.JSONException;
 import org.json.JSONObject;
 import com.citi.example.mqtt.R;
@@ -52,9 +53,9 @@ public class MainActivity extends Activity {
 			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
 			json.put("action", "paymentdue");
 			json.put("message", "");
-			json.put("duedate", "5/6/2014");
-			json.put("amount", "100.00");
-			json.put("account", "1122334455667788");
+			json.put("duedate", RandomString.nextString(1) + "/12/2014");
+			json.put("amount",RandomString.nextString(3) + "." + RandomString.nextString(2)); 
+			json.put("account", RandomString.nextString(16));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -67,9 +68,9 @@ public class MainActivity extends Activity {
 			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
 			json.put("action", "spend");
 			json.put("message", "");
-			json.put("duedate", "5/6/2014");
-			json.put("amount", "40.00");
-			json.put("account", "8877665544332211");
+			json.put("duedate", RandomString.nextString(1) + "/12/2014");
+			json.put("amount",RandomString.nextString(3) + "." + RandomString.nextString(2)); 
+			json.put("account", RandomString.nextString(16));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -82,9 +83,9 @@ public class MainActivity extends Activity {
 			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
 			json.put("action", "activatecard1");
 			json.put("message", "");
-			json.put("duedate", "5/6/2014");
-			json.put("amount", "40.00");
-			json.put("account", "8877665544332211");
+			json.put("duedate", RandomString.nextString(1) + "/12/2014");
+			json.put("amount",RandomString.nextString(3) + "." + RandomString.nextString(2)); 
+			json.put("account", RandomString.nextString(16));
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -92,19 +93,43 @@ public class MainActivity extends Activity {
 	}
 	
 	public void activatecard2(View view) {
-		JSONObject json = new JSONObject();
-		try {
-			json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
-			json.put("action", "activatecard1");
-			json.put("message", "");
-			json.put("duedate", "5/6/2014");
-			json.put("amount", "40.00");
-			json.put("account", "8877665544332211");
-		} catch (JSONException e) {
-			e.printStackTrace();
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		//alert.setTitle(" ");
+		alert.setMessage("Input the approval code:");
+
+		// Set an EditText view to get user input 
+		final EditText input = new EditText(this);
+		alert.setView(input);
+
+		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+		public void onClick(DialogInterface dialog, int whichButton) {
+		  String value = input.getText().toString();
+		  
+			JSONObject json = new JSONObject();
+			try {
+				json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+				json.put("action", "activatecard2");
+				json.put("message", "Card Activated");
+				json.put("duedate", RandomString.nextString(1) + "/12/2014");
+				json.put("amount",RandomString.nextString(3) + "." + RandomString.nextString(2)); 
+				json.put("account", RandomString.nextString(16));
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+			mainsvc.publishMessageToTopic(json.toString());
+
+		  }
+		});
+
+		alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+		  public void onClick(DialogInterface dialog, int whichButton) {
+		    // Canceled.
+		  }
+		});
+
+		alert.show();
 		}
-		mainsvc.publishMessageToTopic(json.toString());
-	}
 
 	public void transfer(View view) {
         Intent intent = new Intent(MainActivity.this, TransferActivity.class);
@@ -211,18 +236,32 @@ public class MainActivity extends Activity {
 		try {
 			JSONObject json = new JSONObject(message);
 			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			
+			boolean login = false;
+			try {
+				if (json.get("pos_login").equals("true"))
+					login = true;
+			} catch (Exception e) { }
+			
+			String pos = getDefault(json, "pos", "OK");
+			String neg = getDefault(json, "neg", "Cancel");
+
 	        builder.setTitle(" ");
 	        builder.setMessage(json.get("message").toString());
+	        final boolean can_login = login;
+	        
 	        builder.setCancelable(true);
 	        builder.setIcon(R.drawable.ic_citi);
-	        builder.setPositiveButton("OK",new DialogInterface.OnClickListener() {
+	        builder.setPositiveButton(pos,new DialogInterface.OnClickListener() {
 	            public void onClick(DialogInterface dialog, int id) {
-	                dialog.cancel();
-	                Intent intent = new Intent(MainActivity.this, FullscreenActivity.class);
-	                startActivity(intent);
+	                if (can_login) {
+		                Intent intent = new Intent(MainActivity.this, FullscreenActivity.class);
+		                startActivity(intent);
+	                }
+	                dialog.cancel();	                
 	            }
 	        });
-	        builder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+	        builder.setNegativeButton(neg,new DialogInterface.OnClickListener() {
 	            public void onClick(DialogInterface dialog, int id) {
 	                dialog.cancel();
 	            }
@@ -234,4 +273,31 @@ public class MainActivity extends Activity {
 			e.printStackTrace();
 		}
     }
+	
+	public String getDefault(JSONObject json, String key, String def) {
+		String retval = def;
+		try {
+			retval = json.get(key).toString();
+		} catch (Exception e) {
+		}
+		return retval;
+	}
+	
+	public static class RandomString {
+		public static String nextString(int length) {
+			char[] buf;
+			Random random = new Random();
+			StringBuilder tmp = new StringBuilder();
+			for (char ch = '0'; ch <= '9'; ++ch)
+				tmp.append(ch);
+			char[] symbols = tmp.toString().toCharArray();
+
+			buf = new char[length];
+
+			for (int idx = 0; idx < buf.length; ++idx)
+				buf[idx] = symbols[random.nextInt(symbols.length)];
+			return new String(buf);
+		}
+	}
+
 }

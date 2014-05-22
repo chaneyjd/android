@@ -151,6 +151,7 @@ public class Main implements MqttSimpleCallback {
 			try {
 				mqttClient.publish(topic, message.getBytes(), 2, true);
 				published = true;
+				notifyUser(topic, message);
 			} catch (MqttNotConnectedException e) {
 				System.out.println("mqtt = publish failed - MQTT not connected");
 			} catch (IllegalArgumentException e) {
@@ -211,6 +212,9 @@ public class Main implements MqttSimpleCallback {
 					json.put("alert", "A payment is due on account ending in " + input.get("account").toString().substring(12));
 					json.put("title", "Please don't see the title");
 					json.put("message", "A payment of $" + input.get("amount").toString() + " for your account ending in " + input.get("account").toString().substring(12) + " is due " + input.get("duedate").toString());
+					json.put("pos", "Make a Payment");
+					json.put("neg", "Cancel");
+					json.put("pos_login", "true");
 					json.put("action", "paymentdue");
 					json.put("account_from", "11112222");
 					json.put("account_to", "33334444");
@@ -222,6 +226,8 @@ public class Main implements MqttSimpleCallback {
 					json.put("alert", "A purchase was made on your account ending in " + input.get("account").toString().substring(12));
 					json.put("title", "Please don't see the title");
 					json.put("message", "A purchase was made on your account ending in " + input.get("account").toString().substring(12) + " in the amount of $" + input.get("amount").toString());
+					json.put("pos", "OK");
+					json.put("neg", "Cancel");
 					json.put("action", "spend");
 					json.put("account_from", "11112222");
 					json.put("account_to", "33334444");
@@ -230,16 +236,45 @@ public class Main implements MqttSimpleCallback {
 					break;
 
 				case "activatecard1":
-					String token = RandomString.nextString(10);
+					String token = RandomString.nextString(5);
 					json.put("alert", "Credit Card Activation requested");
 					json.put("title", "Please don't see the title");
 					json.put("message", "Credit Card Activation requested for your account ending in " + input.get("account").toString().substring(12) + " please use this token (" + token + ")");
+					json.put("pos", "OK");
+					json.put("neg", "Cancel");
 					json.put("action", "activatecard2");
 					json.put("account_from", "11112222");
 					json.put("account_to", "33334444");
 					json.put("id", "");
 					json.put("amount", "100.00");
 					json.put("token", token);
+					break;
+
+				case "activatecard2":
+					json.put("alert", "Credit Card Activated");
+					json.put("title", "Please don't see the title");
+					json.put("message", "Your card ending in " + input.get("account").toString().substring(12) + " is now activated, Citi thanks you for your business");
+					json.put("pos", "OK");
+					json.put("neg", "Cancel");
+					json.put("action", "activate2");
+					json.put("account_from", "11112222");
+					json.put("account_to", "33334444");
+					json.put("id", "");
+					json.put("amount", "100.00");
+					break;
+
+				case "transfer":
+					json.put("alert", "Transfer Completed");
+					json.put("title", "Please don't see the title");
+					json.put("message", "Your transfer from account ending in " + input.get("from_account").toString().substring(12) + " to account ending in " + input.get("to_account").toString().substring(12) + " in the amount of $" + input.get("amount").toString() + " was successfull");
+					json.put("pos", "Login");
+					json.put("neg", "OK");
+					json.put("pos_login", "true");
+					json.put("action", "activatecard2");
+					json.put("account_from", "11112222");
+					json.put("account_to", "33334444");
+					json.put("id", "");
+					json.put("amount", "100.00");
 					break;
 			}
 			
@@ -250,6 +285,7 @@ public class Main implements MqttSimpleCallback {
 		         {
 		        	 try {
 						mqttClient.publish(tmp2, tmp.getBytes(), 2, true);
+						System.out.println(tmp2 + " = " + tmp);
 					} catch (IllegalArgumentException | MqttException e) {
 						e.printStackTrace();
 					}
@@ -269,8 +305,8 @@ public class Main implements MqttSimpleCallback {
 			StringBuilder tmp = new StringBuilder();
 			for (char ch = '0'; ch <= '9'; ++ch)
 				tmp.append(ch);
-			for (char ch = 'a'; ch <= 'z'; ++ch)
-				tmp.append(ch);
+//			for (char ch = 'a'; ch <= 'z'; ++ch)
+//				tmp.append(ch);
 			char[] symbols = tmp.toString().toCharArray();
 
 			buf = new char[length];

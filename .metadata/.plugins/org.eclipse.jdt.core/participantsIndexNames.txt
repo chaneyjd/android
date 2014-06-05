@@ -1,4 +1,6 @@
 INDEX VERSION 1.126
+/Users/jasonchaney/git/android/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1147960490.index
+/SFS/src
 /Users/jason/android/.metadata/.plugins/org.eclipse.jst.jsp.core/jspsearch/1147960490.index
 /SFS/src
 C:\android\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3132888502.index

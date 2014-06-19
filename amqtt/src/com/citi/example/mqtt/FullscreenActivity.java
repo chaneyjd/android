@@ -5,9 +5,9 @@ import java.util.Random;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.citi.example.mqtt.MainActivity.MQTTMessageReceiver;
-import com.citi.example.mqtt.MainActivity.RandomString;
-import com.citi.example.mqtt.MainActivity.StatusUpdateReceiver;
+//import com.citi.example.mqtt.MainActivity.MQTTMessageReceiver;
+//import com.citi.example.mqtt.MainActivity.RandomString;
+//import com.citi.example.mqtt.MainActivity.StatusUpdateReceiver;
 import com.citi.example.mqtt.service.MainService;
 
 import android.app.Activity;
@@ -144,6 +144,7 @@ public class FullscreenActivity extends Activity {
 		try {
 			JSONObject json = new JSONObject(message);
 
+			// Payment Due Alert
 			if (json.get("action").toString().equals("paymentdue")) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 
@@ -157,12 +158,56 @@ public class FullscreenActivity extends Activity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
+								dialog.dismiss();
 							}
 						});
 				builder.setNegativeButton(neg,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
+								dialog.dismiss();
+							}
+						});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+			
+			if (json.get("action").toString().equals("spend_pos")) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				AlertDialog.Builder builder_pos = new AlertDialog.Builder(this);
+				final AlertDialog alert_pos = builder_pos.create();
+				String pos = getDefault(json, "pos", "OK");
+
+				builder.setTitle(" ");
+				builder.setMessage(json.get("message").toString());
+
+				builder.setIcon(R.drawable.ic_citi);
+				builder.setPositiveButton(pos,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+								alert_pos.show();
+							}
+						});
+				AlertDialog alert = builder.create();
+				alert.show();
+			}
+
+			if (json.get("action").toString().equals("spend_neg")) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				AlertDialog.Builder builder_pos = new AlertDialog.Builder(this);
+				final AlertDialog alert_pos = builder_pos.create();
+				String pos = getDefault(json, "pos", "OK");
+
+				builder.setTitle(" ");
+				builder.setMessage(json.get("message").toString());
+
+				builder.setIcon(R.drawable.ic_citi);
+				builder.setPositiveButton(pos,
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+								alert_pos.show();
 							}
 						});
 				AlertDialog alert = builder.create();
@@ -171,35 +216,35 @@ public class FullscreenActivity extends Activity {
 
 			if (json.get("action").toString().equals("spend")) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
-				AlertDialog.Builder builder_pos = new AlertDialog.Builder(this);
-				AlertDialog.Builder builder_neg = new AlertDialog.Builder(this);
+//				AlertDialog.Builder builder_pos = new AlertDialog.Builder(this);
+//				AlertDialog.Builder builder_neg = new AlertDialog.Builder(this);
+//
+//				builder_pos.setTitle(" ");
+//				builder_pos.setMessage("Your purchase has been authorized, thank you for your continued patronage");
+//				builder_pos.setIcon(R.drawable.ic_citi);
+//
+//				builder_pos.setPositiveButton("Ok",
+//						new DialogInterface.OnClickListener() {
+//							public void onClick(DialogInterface dialog,
+//									int whichButton) {
+//								dialog.cancel();
+//							}
+//						});
+//
+//				builder_neg.setTitle(" ");
+//				builder_neg.setMessage("Your purchase has been denied, you will be contacted by Citi to resolve this disputed charge");
+//				builder_neg.setIcon(R.drawable.ic_citi);
+//
+//				builder_neg.setPositiveButton("Ok",
+//						new DialogInterface.OnClickListener() {
+//							public void onClick(DialogInterface dialog,
+//									int whichButton) {
+//								dialog.cancel();
+//							}
+//						});
 
-				builder_pos.setTitle(" ");
-				builder_pos.setMessage("Your purchase has been authorized, thank you for your continued patronage");
-				builder_pos.setIcon(R.drawable.ic_citi);
-
-				builder_pos.setPositiveButton("Ok",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								dialog.cancel();
-							}
-						});
-
-				builder_neg.setTitle(" ");
-				builder_neg.setMessage("Your purchase has been denied, you will be contacted by Citi to resolve this disputed charge");
-				builder_neg.setIcon(R.drawable.ic_citi);
-
-				builder_neg.setPositiveButton("Ok",
-						new DialogInterface.OnClickListener() {
-							public void onClick(DialogInterface dialog,
-									int whichButton) {
-								dialog.cancel();
-							}
-						});
-
-				final AlertDialog alert_pos = builder_pos.create();
-				final AlertDialog alert_neg = builder_neg.create();
+//				final AlertDialog alert_pos = builder_pos.create();
+//				final AlertDialog alert_neg = builder_neg.create();
 
 				String pos = getDefault(json, "pos", "OK");
 				String neg = getDefault(json, "neg", "Cancel");
@@ -213,21 +258,49 @@ public class FullscreenActivity extends Activity {
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
-								alert_pos.show();
+								
+								JSONObject json = new JSONObject();
+								try {
+									json.put("id", "android/" + Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+									json.put("action", "spend_pos");
+									json.put("message", "Card Activated");
+//									json.put("duedate", RandomString.nextString(1) + "/12/2014");
+//									json.put("amount",RandomString.nextString(3) + "." + RandomString.nextString(2)); 
+//									json.put("account", RandomString.nextString(16));
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+								mainsvc.publishMessageToTopic(json.toString());
+
+//								alert_pos.show();
 							}
 						});
 				builder.setNegativeButton(neg,
 						new DialogInterface.OnClickListener() {
 							public void onClick(DialogInterface dialog, int id) {
 								dialog.cancel();
-								alert_neg.show();
+								
+								JSONObject json = new JSONObject();
+								try {
+									json.put("id", "android/" + Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+									json.put("action", "spend_neg");
+									json.put("message", "Card Activated");
+//									json.put("duedate", RandomString.nextString(1) + "/12/2014");
+//									json.put("amount",RandomString.nextString(3) + "." + RandomString.nextString(2)); 
+//									json.put("account", RandomString.nextString(16));
+								} catch (JSONException e) {
+									e.printStackTrace();
+								}
+								mainsvc.publishMessageToTopic(json.toString());
+
+//								alert_neg.show();
 							}
 						});
 				AlertDialog alert = builder.create();
 				alert.show();
 			}
 
-			if (json.get("action").toString().equals("activate2")) {
+			if (json.get("action").toString().equals("activate-end")) {
 				AlertDialog.Builder builder = new AlertDialog.Builder(this);
 				String pos = getDefault(json, "pos", "OK");
 
@@ -282,9 +355,10 @@ public class FullscreenActivity extends Activity {
 								
 								JSONObject json = new JSONObject();
 								try {
-									json.put("id", Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+									json.put("id", "android/" + Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
 									json.put("action", "activatecard2");
 									json.put("message", "Card Activated");
+									json.put("ssn", input.getText());
 									json.put("duedate", RandomString.nextString(1) + "/12/2014");
 									json.put("amount",RandomString.nextString(3) + "." + RandomString.nextString(2)); 
 									json.put("account", RandomString.nextString(16));

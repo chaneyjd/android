@@ -4216,3 +4216,37 @@ Caused by: org.eclipse.core.runtime.CoreException: One or more constraints have 
 2014-06-03 09:15:39,032 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
 2014-06-03 09:15:39,033 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
 2014-06-03 09:15:39,033 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-05 23:08:59,412 [Worker-8] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: SFS:SFS:0.0.1-SNAPSHOT @ /Users/jasonchaney/git/android/SFS/pom.xml.
+2014-06-05 23:08:59,974 [Worker-8] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-05 23:08:59,975 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-05 23:08:59,977 [Worker-8] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-05 23:08:59,977 [Worker-8] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-05 23:09:00,444 [Worker-8] INFO  o.e.m.c.i.l.LifecycleMappingFactory - Using org.maven.ide.eclipse.wtp.WarLifecycleMapping lifecycle mapping for MavenProject: SFS:SFS:0.0.1-SNAPSHOT @ /Users/jasonchaney/git/android/SFS/pom.xml.
+2014-06-05 23:09:03,229 [Worker-9] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-05 23:09:03,229 [Worker-9] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-05 23:09:03,230 [Worker-9] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-05 23:09:03,230 [Worker-9] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-06 08:33:34,621 [Worker-7] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-06 08:33:34,633 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-06 08:33:34,636 [Worker-7] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-06 08:33:34,636 [Worker-7] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-08 14:29:25,414 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-08 14:29:25,425 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-08 14:29:25,428 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-08 14:29:25,428 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-08 16:52:04,865 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-08 16:52:04,877 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-08 16:52:04,881 [Worker-1] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-08 16:52:04,881 [Worker-1] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-09 09:57:04,980 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-09 09:57:05,005 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-09 09:57:05,008 [Worker-2] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-09 09:57:05,008 [Worker-2] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-17 20:40:36,997 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-17 20:40:37,008 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-17 20:40:37,011 [Worker-3] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-17 20:40:37,011 [Worker-3] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-06-18 00:16:18,485 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-18 00:16:18,497 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-06-18 00:16:18,499 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-06-18 00:16:18,500 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources

@@ -209,26 +209,52 @@ public class Main implements MqttSimpleCallback {
 		
 			switch (input.get("action").toString()) {
 				case "paymentdue":
-					json.put("alert", "A payment is due on account ending in " + input.get("account").toString().substring(12));
-					json.put("title", "Please don't see the title");
+//					json.put("alert", "A payment is due on account ending in " + input.get("account").toString().substring(12));
+//					json.put("title", "Please don't see the title");
 					json.put("message", "A payment of $" + input.get("amount").toString() + " for your account ending in " + input.get("account").toString().substring(12) + " is due " + input.get("duedate").toString());
 					json.put("pos", "Make a Payment");
 					json.put("neg", "Cancel");
 					json.put("pos_login", "true");
 					json.put("action", "paymentdue");
-					json.put("account_from", "11112222");
-					json.put("account_to", "33334444");
+					json.put("account_from", "1111222233334444");
+					json.put("account_to", "3333444455556666");
 					json.put("id", "");
 					json.put("amount", "100.00");
 					break;
 
 				case "spend":
-					json.put("alert", "A purchase was made on your account ending in " + input.get("account").toString().substring(12));
-					json.put("title", "Please don't see the title");
+//					json.put("alert", "A purchase was made on your account ending in " + input.get("account").toString().substring(12));
+//					json.put("title", "Please don't see the title");
 					json.put("message", "A purchase was made on your account ending in " + input.get("account").toString().substring(12) + " in the amount of $" + input.get("amount").toString());
 					json.put("pos", "OK");
 					json.put("neg", "Cancel");
 					json.put("action", "spend");
+					json.put("account_from", "1111222233334444");
+					json.put("account_to", "3333444455556666");
+					json.put("id", "");
+					json.put("amount", "100.00");
+					break;
+
+				case "spend_pos":
+//					json.put("alert", "Your purchase has been authorized, thank you for your continued patronage");
+//					json.put("title", "Please don't see the title");
+					json.put("message", "Your purchase has been authorized, thank you for your continued patronage");
+					json.put("pos", "OK");
+					json.put("neg", "Cancel");
+					json.put("action", "spend_pos");
+					json.put("account_from", "1111222233334444");
+					json.put("account_to", "3333444455556666");
+					json.put("id", "");
+					json.put("amount", "100.00");
+					break;
+
+				case "spend_neg":
+//					json.put("alert", "A purchase was made on your account ending in " + input.get("account").toString().substring(12));
+//					json.put("title", "Please don't see the title");
+					json.put("message", "Your purchase has been denied, you will be contacted by Citi to resolve this disputed charge");
+					json.put("pos", "OK");
+					json.put("neg", "Cancel");
+					json.put("action", "spend_neg");
 					json.put("account_from", "11112222");
 					json.put("account_to", "33334444");
 					json.put("id", "");
@@ -251,16 +277,29 @@ public class Main implements MqttSimpleCallback {
 					break;
 
 				case "activatecard2":
-					json.put("alert", "Credit Card Activated");
-					json.put("title", "Please don't see the title");
-					json.put("message", "Your card ending in " + input.get("account").toString().substring(12) + " is now activated, Citi thanks you for your business");
-					json.put("pos", "OK");
-					json.put("neg", "Cancel");
-					json.put("action", "activate2");
-					json.put("account_from", "11112222");
-					json.put("account_to", "33334444");
-					json.put("id", "");
-					json.put("amount", "100.00");
+					if (input.get("ssn").equals("1234")) {
+						json.put("alert", "Credit Card Activated");
+						json.put("title", "Credit Card Activated");
+						json.put("message", "Your card ending in " + input.get("account").toString().substring(12) + " is now activated, Citi thanks you for your business");
+						json.put("pos", "OK");
+						json.put("neg", "Cancel");
+						json.put("action", "activate-end");
+						json.put("account_from", "11112222");
+						json.put("account_to", "33334444");
+						json.put("id", "");
+						json.put("amount", "100.00");
+					} else {
+						json.put("alert", "Credit Card NOT Activated");
+						json.put("title", "Credit Card NOT Activated");
+						json.put("message", "Your card ending in " + input.get("account").toString().substring(12) + " cannot be activated, please contact Citi for further assistance");
+						json.put("pos", "OK");
+						json.put("neg", "Cancel");
+						json.put("action", "activate-end");
+						json.put("account_from", "11112222");
+						json.put("account_to", "33334444");
+						json.put("id", "");
+						json.put("amount", "100.00");
+					}
 					break;
 
 				case "transfer":

@@ -100,7 +100,7 @@ public class MainService extends Service implements MqttSimpleCallback {
 		brokerPortNumber = p.getProperty("port");
 		topics.add(p.getProperty("public_topic"));
 		qos.add(2);
-		topics.add(p.getProperty("private_topic") + Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
+		topics.add(p.getProperty("private_topic") + "android/" + Secure.getString(getBaseContext().getContentResolver(), Secure.ANDROID_ID));
 		qos.add(2);
 		publishTopic = p.getProperty("publish_topic");
 		
@@ -228,7 +228,8 @@ public class MainService extends Service implements MqttSimpleCallback {
 		notification.flags |= Notification.FLAG_AUTO_CANCEL;
 		notification.ledARGB = Color.MAGENTA;
 		Intent notificationIntent = new Intent(this, FullscreenActivity.class);
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 2, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 		notification.setLatestEventInfo(this, title, body, contentIntent);
 		nm.notify(MQTT_NOTIFICATION_UPDATE++, notification);
 	}

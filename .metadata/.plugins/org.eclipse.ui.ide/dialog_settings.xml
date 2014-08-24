@@ -11,16 +11,16 @@
 			<item value=""/>
 		</list>
 	</section>
+	<section name="CleanDialogSettings">
+		<item value="662" key="DIALOG_WIDTH"/>
+		<item value="260" key="DIALOG_Y_ORIGIN"/>
+		<item value="-1291" key="DIALOG_X_ORIGIN"/>
+		<item value="421" key="DIALOG_HEIGHT"/>
+		<item value="false" key="TOGGLE_SELECTED"/>
+	</section>
 	<section name="NewWizardAction">
 		<item value="org.eclipse.jdt.ui.wizards.JavaProjectWizard" key="NewWizardSelectionPage.STORE_SELECTED_ID"/>
 		<list key="NewWizardSelectionPage.STORE_EXPANDED_CATEGORIES_ID">
 		</list>
-	</section>
-	<section name="CleanDialogSettings">
-		<item value="662" key="DIALOG_WIDTH"/>
-		<item value="260" key="DIALOG_Y_ORIGIN"/>
-		<item value="421" key="DIALOG_HEIGHT"/>
-		<item value="-1291" key="DIALOG_X_ORIGIN"/>
-		<item value="false" key="TOGGLE_SELECTED"/>
 	</section>
 </section>

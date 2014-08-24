@@ -4250,3 +4250,7 @@ Caused by: org.eclipse.core.runtime.CoreException: One or more constraints have 
 2014-06-18 00:16:18,497 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
 2014-06-18 00:16:18,499 [Worker-5] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
 2014-06-18 00:16:18,500 [Worker-5] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
+2014-08-19 10:54:06,632 [Worker-0] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-08-19 10:54:06,644 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/main/resources
+2014-08-19 10:54:06,646 [Worker-0] WARN  o.e.m.c.i.embedder.EclipseLogger - Using platform encoding (US-ASCII actually) to copy filtered resources, i.e. build is platform dependent!
+2014-08-19 10:54:06,646 [Worker-0] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory /Users/jasonchaney/git/android/SFS/src/test/resources
